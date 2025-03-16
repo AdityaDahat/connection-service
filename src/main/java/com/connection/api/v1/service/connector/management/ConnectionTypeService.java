@@ -179,4 +179,8 @@ public class ConnectionTypeService {
         }
         return connectionType.get();
     }
+
+    public Optional<ConnectionType> findById(String id) {
+        return connectionTypeRepository.findByIdAndIsDeleted(id, false);
+    }
 }

@@ -59,6 +59,18 @@ public class ApiResponse<T> {
         this.timestamp = Instant.now();
     }
 
+    public ApiResponse(String message , T data) {
+        super();
+        this.message = message;
+        this.data = data;
+    }
+
+    public ApiResponse(String message ,String reason, T data) {
+        super();
+        this.message = message;
+        this.reason=reason;
+        this.data = data;
+    }
     public T getData() {
         return data;
     }

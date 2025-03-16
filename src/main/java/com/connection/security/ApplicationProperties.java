@@ -1,14 +1,16 @@
 package com.connection.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
 @ConfigurationProperties(prefix = "databyte")
 public class ApplicationProperties {
 
-    private SecurityProperties security;
+    private SecurityProperties security = new SecurityProperties();
+    private DataByteProperties dataByte = new DataByteProperties();
 
+    // ✅ GETTERS & SETTERS
     public SecurityProperties getSecurity() {
         return security;
     }
@@ -17,37 +19,29 @@ public class ApplicationProperties {
         this.security = security;
     }
 
-    public static class SecurityProperties{
-            private String apiMatcher;
-            private String abstractPath;
-            private String[] permittedEndpoints;
-            private String[] abstractEndpoints;
-            private String[] allowedOrigins;
-            private String[] allowedMethods;
-            private String[] allowedHeaders;
+    public DataByteProperties getDataByte() {
+        return dataByte;
+    }
 
-        public String getApiMatcher() {
+    public void setDataByte(DataByteProperties dataByte) {
+        this.dataByte = dataByte;
+    }
+
+    // ✅ Security Properties Class
+    public static class SecurityProperties {
+        private String[] apiMatcher;
+        private String[] abstractEndpoints;
+        private String[] permittedEndpoints;
+        private String[] allowedOrigins;
+        private String[] allowedMethods;
+        private String[] allowedHeaders;
+
+        public String[] getApiMatcher() {
             return apiMatcher;
         }
 
-        public void setApiMatcher(String apiMatcher) {
+        public void setApiMatcher(String[] apiMatcher) {
             this.apiMatcher = apiMatcher;
-        }
-
-        public String getAbstractPath() {
-            return abstractPath;
-        }
-
-        public void setAbstractPath(String abstractPath) {
-            this.abstractPath = abstractPath;
-        }
-
-        public String[] getPermittedEndpoints() {
-            return permittedEndpoints;
-        }
-
-        public void setPermittedEndpoints(String[] permittedEndpoints) {
-            this.permittedEndpoints = permittedEndpoints;
         }
 
         public String[] getAbstractEndpoints() {
@@ -56,6 +50,14 @@ public class ApplicationProperties {
 
         public void setAbstractEndpoints(String[] abstractEndpoints) {
             this.abstractEndpoints = abstractEndpoints;
+        }
+
+        public String[] getPermittedEndpoints() {
+            return permittedEndpoints;
+        }
+
+        public void setPermittedEndpoints(String[] permittedEndpoints) {
+            this.permittedEndpoints = permittedEndpoints;
         }
 
         public String[] getAllowedOrigins() {
@@ -82,5 +84,35 @@ public class ApplicationProperties {
             this.allowedHeaders = allowedHeaders;
         }
     }
-}
 
+    // ✅ DataByte Properties Class
+    public static class DataByteProperties {
+        private String contextPath;
+        private String apiDomain;
+        private String uiDomain;
+
+        public String getContextPath() {
+            return contextPath;
+        }
+
+        public void setContextPath(String contextPath) {
+            this.contextPath = contextPath;
+        }
+
+        public String getApiDomain() {
+            return apiDomain;
+        }
+
+        public void setApiDomain(String apiDomain) {
+            this.apiDomain = apiDomain;
+        }
+
+        public String getUiDomain() {
+            return uiDomain;
+        }
+
+        public void setUiDomain(String uiDomain) {
+            this.uiDomain = uiDomain;
+        }
+    }
+}

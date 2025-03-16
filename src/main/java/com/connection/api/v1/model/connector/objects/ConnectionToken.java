@@ -159,4 +159,8 @@ public class ConnectionToken {
     public void setConnectionProperties(Map<String, Object> connectionProperties) {
         this.connectionProperties = connectionProperties;
     }
+
+    public void addConnectionProperties(String key, Object value) {
+        connectionProperties.put(key, value);
+    }
 }

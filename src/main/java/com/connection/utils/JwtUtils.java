@@ -42,4 +42,11 @@ public class JwtUtils {
         }
         return token;
     }
+
+    public String extractJwtFromHeader(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith(Constants.BEARER)) {
+            return authorizationHeader.substring(7);
+        }
+        return null;
+    }
 }

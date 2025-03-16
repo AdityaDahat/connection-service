@@ -3,6 +3,8 @@ import com.connection.api.v1.model.connector.management.ConnectionTypeDetails;
 import java.util.Map;
 
 public interface ConnectionTypeProjection {
+
+    String getId();
     String getName();
     String getShortName();
     Boolean getIsPrivate();

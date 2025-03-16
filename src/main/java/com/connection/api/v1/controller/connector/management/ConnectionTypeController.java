@@ -1,5 +1,6 @@
 package com.connection.api.v1.controller.connector.management;
 
+import com.connection.api.v1.model.response.ApiResponse;
 import com.connection.api.v1.payload.connector.management.ConnectionTypeCreationPayload;
 import com.connection.api.v1.payload.connector.management.ConnectionTypeUpdatePayload;
 import com.connection.api.v1.service.connector.management.ConnectionTypeService;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/management")
+@CrossOrigin("*")
 public class ConnectionTypeController {
     @Autowired
     private final ConnectionTypeService connectionTypeService;
@@ -62,7 +64,7 @@ public class ConnectionTypeController {
     public ResponseEntity<Object> deleteConnectionType(@RequestBody List<String> ids) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(connectionTypeService.deleteConnectionType(ids));
+                .body(new ApiResponse<>(connectionTypeService.deleteConnectionType(ids)));
     }
 
     @GetMapping("/search/connection-type")

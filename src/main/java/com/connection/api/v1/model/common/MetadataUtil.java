@@ -1,6 +1,7 @@
 package com.connection.api.v1.model.common;
 
 import com.connection.utils.JwtUtils;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -23,12 +23,17 @@ logging:
       hibernate:
         SQL: DEBUG
         type: TRACE
+
+# ✅ DataByte Configuration
 databyte:
+  context-path: ${server.servlet.context-path}
+  api-domain: https://api.electrik.ai
+  ui-domain: https://io.electrik.ai
   security:
     api-matcher:
-     - /**
+      - /**
     abstract-endpoints:
-     - /swagger-ui.html
+      - /swagger-ui.html
     permitted-endpoints:
       - /v1/**
       - /api/v1/auth/user/create
@@ -41,7 +46,7 @@ databyte:
       - GET
       - POST
       - PUT
-      - DELETE"
+      - DELETE
     allowed-headers:
       - Authorization
       - Content-Type

@@ -3,8 +3,10 @@ package com.connection.api.v1.repository.connector.objects;
 import com.connection.api.v1.model.connector.objects.Connection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,4 +18,13 @@ public interface ConnectionRepository extends JpaRepository<Connection, String> 
             boolean isDeleted,
             long customerId,
             String connectionTypeId);
+
+    @Query(value = "SELECT * FROM connection_tbl " +
+            "WHERE connection_type_id = :connectionTypeId " +
+            "AND properties -> 'payload' ->> 'email' = :email " +
+            "AND is_deleted = :isDeleted", nativeQuery = true)
+    List<Connection> findByConnectionTypeIdAndEmailAndIsDeleted(
+            @Param("connectionTypeId") String connectionTypeId,
+            @Param("email") String email,
+            @Param("isDeleted") boolean isDeleted);
 }
