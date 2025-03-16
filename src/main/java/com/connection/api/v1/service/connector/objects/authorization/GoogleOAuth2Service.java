@@ -43,8 +43,8 @@ public class GoogleOAuth2Service {
     private static final Logger LOG = LoggerFactory.getLogger(GoogleOAuth2Service.class);
     public static final String DEVELOPER_TOKEN = "F4JTbjxOFYXs1SHM_F5Rpw";
     public static final String CONNECTION_TYPE_ID = "7bhm459fbi4avvrnteo8tmoefgpmif2ujbju";
-    public static final String CLIENT_ID = "537816608564-309ehta7slv9lace18f8pbmldsrbmd1e.apps.googleusercontent.com";
-    public static final String CLIENT_SECRET = "a2B3IcCsJdkc7cbhyBYdD4WT";
+    public static final String CLIENT_ID = "8070736070-231qq8r0ipb09e7tqlub4f6284j98qvj.apps.googleusercontent.com";
+    public static final String CLIENT_SECRET = "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";
     public static final String REDIRECT_URI = "/v1/connector/google/oauth2/callback";
     public static final String TOKEN_URL = "https://www.googleapis.com/oauth2/v4/token";
     private static final String REVOKE_URL = "https://accounts.google.com/o/oauth2/revoke";
