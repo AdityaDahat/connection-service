@@ -27,4 +27,6 @@ public interface ConnectionRepository extends JpaRepository<Connection, String> 
             @Param("connectionTypeId") String connectionTypeId,
             @Param("email") String email,
             @Param("isDeleted") boolean isDeleted);
+
+
 }

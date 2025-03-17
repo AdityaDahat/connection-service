@@ -56,11 +56,11 @@ CREATE TABLE IF NOT EXISTS ${defaultSchema}.connection_token_tbl (
     connection_type_id VARCHAR(36) NOT NULL,
     project_id VARCHAR(36) NOT NULL,
     account_id VARCHAR(36) NOT NULL,
-    connection_name VARCHAR(255) NOT NULL,
-    connection_id VARCHAR(36) NOT NULL,
+    connection_name VARCHAR(255),
+    connection_id VARCHAR(36),
     is_reauthorization BOOLEAN DEFAULT FALSE,
-    user_id VARCHAR (36) NOT NULL,
-    user_name VARCHAR(255) NOT NULL,
+    user_id VARCHAR (36),
+    user_name VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     connection_properties JSONB DEFAULT '{}'::JSONB
     );

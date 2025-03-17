@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping("/v1/connector/google/oauth2")
+@CrossOrigin("*")
 public class GoogleOAuth2Controller {
     @Autowired
     private GoogleOAuth2Service googleOAuth2Service;

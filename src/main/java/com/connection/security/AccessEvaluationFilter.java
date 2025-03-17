@@ -1,7 +1,6 @@
 package com.connection.security;
 
 import com.connection.api.v1.feign.admin.AdminService;
-import com.connection.constants.Constants;
 import com.connection.constants.CustomMessages;
 import com.connection.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
@@ -11,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.ContentType;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -52,10 +50,12 @@ public class AccessEvaluationFilter extends OncePerRequestFilter {
 //            response.getWriter().write(CustomMessages.AUTHENTICATION_TOKEN_MISSING);
 //            return;
 //        }
-
-//        Map<String, String> reqEntity = getRequestPayload(request);
-//        ResponseEntity<Object> result = adminService.evaluatePermission(reqEntity);
 //
+//        Map<String, String> reqEntity = new HashMap<>(getRequestPayload(request));
+//        reqEntity.put("userId",jwtUtil.getUserIdFromToken(request.getHeader(HttpHeaders.AUTHORIZATION)));
+//
+//        ResponseEntity<Object> result = adminService.evaluatePermission(reqEntity);
+////
 //        if (result == null || result.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
 //            response.setStatus(403);
 //            response.setContentType(ContentType.APPLICATION_JSON.getMimeType());
@@ -78,8 +78,8 @@ public class AccessEvaluationFilter extends OncePerRequestFilter {
     }
 
     private Map<String, String> getRequestPayload(HttpServletRequest request) {
-//        return Map.of(Constants.REQUEST_URI, request.getRequestURI(), HttpHeaders.AUTHORIZATION, request.getHeader(HttpHeaders.AUTHORIZATION));
-        return Map.of("Request", request.toString());
+        return Map.of("uri", request.getRequestURI(),
+                      "method",request.getMethod());
     }
 
     private boolean isPrePermitted(String requestPath) {

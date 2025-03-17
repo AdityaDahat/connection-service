@@ -26,18 +26,18 @@ public class ConnectionToken {
     @Column(name = "connection_type_id")
     private String connectionTypeId;
 
-    @NotNull(message = "projectId is required")
-    @NotEmpty(message = "projectId is required")
+//    @NotNull(message = "projectId is required")
+//    @NotEmpty(message = "projectId is required")
     @Column(name = "project_id")
     private String projectId;
 
-    @NotNull(message = "accountId is required")
-    @NotEmpty(message = "accountId is required")
+//    @NotNull(message = "accountId is required")
+//    @NotEmpty(message = "accountId is required")
     @Column(name = "account_id")
     private String accountId;
 
-    @NotNull(message = "connectionName is required")
-    @NotEmpty(message = "connectionName is required")
+//    @NotNull(message = "connectionName is required")
+//    @NotEmpty(message = "connectionName is required")
     @Column(name = "connection_name")
     private String connectionName;
 

@@ -1,16 +1,45 @@
 package com.connection.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "databyte")
 public class ApplicationProperties {
 
-    private SecurityProperties security = new SecurityProperties();
-    private DataByteProperties dataByte = new DataByteProperties();
+    private String contextPath;
+    private String apiDomain;
+    private String uiDomain;
 
-    // ✅ GETTERS & SETTERS
+    @NestedConfigurationProperty
+    private SecurityProperties security = new SecurityProperties();
+
+    // GETTERS & SETTERS
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
+    public String getApiDomain() {
+        return apiDomain;
+    }
+
+    public void setApiDomain(String apiDomain) {
+        this.apiDomain = apiDomain;
+    }
+
+    public String getUiDomain() {
+        return uiDomain;
+    }
+
+    public void setUiDomain(String uiDomain) {
+        this.uiDomain = uiDomain;
+    }
+
     public SecurityProperties getSecurity() {
         return security;
     }
@@ -19,15 +48,6 @@ public class ApplicationProperties {
         this.security = security;
     }
 
-    public DataByteProperties getDataByte() {
-        return dataByte;
-    }
-
-    public void setDataByte(DataByteProperties dataByte) {
-        this.dataByte = dataByte;
-    }
-
-    // ✅ Security Properties Class
     public static class SecurityProperties {
         private String[] apiMatcher;
         private String[] abstractEndpoints;
@@ -35,7 +55,9 @@ public class ApplicationProperties {
         private String[] allowedOrigins;
         private String[] allowedMethods;
         private String[] allowedHeaders;
+        private boolean allowCredentials;
 
+        // GETTERS & SETTERS
         public String[] getApiMatcher() {
             return apiMatcher;
         }
@@ -83,36 +105,13 @@ public class ApplicationProperties {
         public void setAllowedHeaders(String[] allowedHeaders) {
             this.allowedHeaders = allowedHeaders;
         }
-    }
 
-    // ✅ DataByte Properties Class
-    public static class DataByteProperties {
-        private String contextPath;
-        private String apiDomain;
-        private String uiDomain;
-
-        public String getContextPath() {
-            return contextPath;
+        public boolean isAllowCredentials() {
+            return allowCredentials;
         }
 
-        public void setContextPath(String contextPath) {
-            this.contextPath = contextPath;
-        }
-
-        public String getApiDomain() {
-            return apiDomain;
-        }
-
-        public void setApiDomain(String apiDomain) {
-            this.apiDomain = apiDomain;
-        }
-
-        public String getUiDomain() {
-            return uiDomain;
-        }
-
-        public void setUiDomain(String uiDomain) {
-            this.uiDomain = uiDomain;
+        public void setAllowCredentials(boolean allowCredentials) {
+            this.allowCredentials = allowCredentials;
         }
     }
 }

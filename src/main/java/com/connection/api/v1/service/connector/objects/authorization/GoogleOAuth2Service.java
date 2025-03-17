@@ -23,6 +23,12 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +42,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GoogleOAuth2Service {
@@ -62,6 +69,8 @@ public class GoogleOAuth2Service {
     private final ObjectMapper objectMapper;
     private final ConnectionTypeService connectionTypeService;
     private final ApplicationProperties configurations;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     public GoogleOAuth2Service(ConnectionTypeRepository connectionTypeRepository,
@@ -89,7 +98,7 @@ public class GoogleOAuth2Service {
 
         //THis needs to be corrected
         String url = authorizationCodeFlow.newAuthorizationUrl()
-                .setRedirectUri("https://localhost:8082" + "/connection" + REDIRECT_URI).build();
+                .setRedirectUri("http://localhost:8082" + "/connection" + REDIRECT_URI).build();
 
         LOG.info("URL {} ",url);
         if (uiCallback == null || uiCallback.isEmpty())
@@ -216,7 +225,7 @@ public class GoogleOAuth2Service {
         if (uiCallbackUrl.startsWith("http")) {
             url = uiCallbackUrl;
         } else {
-            url = configurations.getDataByte().getUiDomain() + uiCallbackUrl;
+            url = configurations.getUiDomain() + uiCallbackUrl;
         }
 
         char concatWith = '?';
@@ -234,14 +243,17 @@ public class GoogleOAuth2Service {
         GoogleTokenResponse tokenResponse = null;
         GoogleIdToken.Payload payload = null;
         /* getting token response using oauthCode */
+        LOG.info("REDIRECT URI STRING: {}",configurations.getApiDomain() + configurations.getContextPath() + REDIRECT_URI);
         tokenResponse = new GoogleAuthorizationCodeTokenRequest(HTTP_TRANSPORT, GSON_FACTORY, TOKEN_URL, CLIENT_ID,
                 CLIENT_SECRET, oauthCode,
-                configurations.getDataByte().getApiDomain() + configurations.getDataByte().getContextPath() + REDIRECT_URI).execute();
+                configurations.getApiDomain() + configurations.getContextPath() + REDIRECT_URI).execute();
 
         tokenResponse.setExpiresInSeconds(null);
         /* verifying the idToken got from response token */
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(HTTP_TRANSPORT, GSON_FACTORY)
                 .setAudience(Collections.singletonList(CLIENT_ID)).build();
+
+        LOG.info("TOKEN RESPOSE: {} ",tokenResponse);
 
         GoogleIdToken googleIdToken = verifier.verify(tokenResponse.getIdToken());
 
@@ -271,6 +283,8 @@ public class GoogleOAuth2Service {
          */
         ConnectionToken connectionToken = new ConnectionToken();
         connectionToken.setConnectionTypeId(connectionType.getId());
+        connectionToken.setProjectId("PR0090");
+        connectionToken.setAccountId("ORG0090");
         connectionToken.setConnectionProperties(connectionProperties);
         connectionToken.setReauthorization(false);
 
@@ -327,8 +341,28 @@ public class GoogleOAuth2Service {
                 + "&connection-type-id=" + connectionType.getId() + "&setup-mode=" + stateJson.get(SETUP_MODE);
     }
 
+    public List<Connection> findByConnectionTypeIdAndEmailAndIsDeleted(String connectionTypeId, String email, boolean isDeleted) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Connection> query = cb.createQuery(Connection.class);
+        Root<Connection> root = query.from(Connection.class);
+
+        Predicate typePredicate = cb.equal(root.get("connectionTypeId"), connectionTypeId);
+        Predicate deletedPredicate = cb.equal(root.get("isDeleted"), isDeleted);
+
+        query.select(root).where(cb.and(typePredicate, deletedPredicate));
+
+        List<Connection> connections = entityManager.createQuery(query).getResultList();
+
+        return connections.stream()
+                .filter(c -> c.getProperties() != null &&
+                        c.getProperties().containsKey("payload") &&
+                        ((Map<String, Object>) c.getProperties().get("payload")).get("email").equals(email))
+                .collect(Collectors.toList());
+    }
+
+
     private void updateAllRefreshToken(String refreshToken, String email, String connectionTypeId) {
-        List<Connection> connections = connectionRepository.findByConnectionTypeIdAndEmailAndIsDeleted(connectionTypeId,
+        List<Connection> connections = findByConnectionTypeIdAndEmailAndIsDeleted(connectionTypeId,
                 connectionTypeId, false);
 
         ListIterator<Connection> i = connections.listIterator();
