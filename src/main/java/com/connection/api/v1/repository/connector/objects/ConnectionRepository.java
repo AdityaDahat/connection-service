@@ -1,6 +1,7 @@
 package com.connection.api.v1.repository.connector.objects;
 
 import com.connection.api.v1.model.connector.objects.Connection;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,4 +30,7 @@ public interface ConnectionRepository extends JpaRepository<Connection, String> 
             @Param("isDeleted") boolean isDeleted);
 
 
+    Optional<Connection> findByNameAndAndAccountIdAndProjectIdAndIsDeleted(String connectionName, String accountId, String projectId, boolean isDeleted);
+
+    List<Connection> findByProjectIdAndIsDeleted(String projectId, boolean b, Pageable pageable);
 }

@@ -27,7 +27,7 @@ import java.util.*;
 public class GoogleAds {
 
     private static final Logger LOG = LoggerFactory.getLogger(GoogleAds.class);
-    private static final String CONNECTION_TYPE_ID = "xyz";
+    private static final String CONNECTION_TYPE_ID = "mg4wbg7k6c9q3zr186f4ypgwtb23wciucvdh";
     private static final String CUSTOMER_ID = "customerId";
     private static final String DESCRIPTIVE_NAME = "descriptiveName";
     private static final String DATE_TIMEZONE = "dateTimeZone";
@@ -69,6 +69,7 @@ public class GoogleAds {
             TokenResponse tokenResponse = new ObjectMapper().convertValue(
                     connectionToken.getConnectionProperties().get(Constants.TOKEN_RESPONSE), TokenResponse.class);
 
+            LOG.info("TOKEN RESP {} ",tokenResponse);
             List<String> customerResourceNames = getCustomerResourceName(tokenResponse, connectionType);
 
             if (customerResourceNames.isEmpty()) {

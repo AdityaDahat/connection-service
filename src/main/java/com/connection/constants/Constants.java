@@ -8,4 +8,5 @@ public class Constants {
     public static final String TOKEN_RESPONSE = "tokenResponse";
     public static final String VERSION_EXPRESSION = "${version}";
     public static final String REQUEST_URI = "requestURI";
+    public static final String ACCESS_THROUGH_SECRET = "accessThroughSecret";
 }

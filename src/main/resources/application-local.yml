@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://pg-8de9f12-data-byte.h.aivencloud.com:19243/defaultdb
-    username: avnadmin
-    password: AVNS_4cb5tvyoy_Jow90vRr2
+    url: jdbc:postgresql://localhost:5432/ADMIN_DB
+    username: postgres
+    password: root
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -16,7 +16,7 @@ spring:
         default_schema: connection_service
 
   liquibase:
-    enabled: true
+    enabled: false
     change-log: classpath:database/changelog-master.xml
     default-schema: ${spring.jpa.properties.hibernate.default_schema}
 
