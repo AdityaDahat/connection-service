@@ -2,44 +2,53 @@ package com.connection.api.v1.service.connector.management;
 
 import com.connection.api.v1.feign.admin.AdminService;
 import com.connection.api.v1.model.common.MetadataUtil;
-import com.connection.api.v1.model.connector.management.ConnectionType;
-import com.connection.api.v1.model.connector.management.ConnectionTypeCategory;
-import com.connection.api.v1.model.connector.management.OperationModes;
+import com.connection.api.v1.model.connector.management.*;
 import com.connection.api.v1.model.connector.management.dto.ConnectionTypeProjection;
 import com.connection.api.v1.model.response.ApiResponse;
 import com.connection.api.v1.model.response.ErrorMessage;
 import com.connection.api.v1.payload.connector.management.ConnectionTypeCreationPayload;
+import com.connection.api.v1.payload.connector.management.ConnectionTypeFilter;
 import com.connection.api.v1.payload.connector.management.ConnectionTypeUpdatePayload;
 import com.connection.api.v1.repository.connector.management.ConnectionTypeCategoryRepository;
 import com.connection.api.v1.repository.connector.management.ConnectionTypeRepository;
+import com.connection.api.v1.repository.connector.management.PipelineTemplateRepository;
 import com.connection.constants.Connectors;
+import com.connection.constants.Constants;
 import com.connection.constants.CustomMessages;
 import com.connection.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.rmi.NoSuchObjectException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ConnectionTypeService {
     private final ConnectionTypeCategoryRepository connectionTypeCategoryRepository;
     private final ConnectionTypeRepository connectionTypeRepository;
-    @Autowired
-    private AdminService adminService;
+    private final AdminService adminService;
+    private final PipelineTemplateRepository pipelineTemplateRepository;
     private final MetadataUtil metadataUtil;
 
+    @Autowired
     public ConnectionTypeService(ConnectionTypeCategoryRepository connectionTypeCategoryRepository,
                                  ConnectionTypeRepository connectionTypeRepository,
+                                 AdminService adminService,
+                                 PipelineTemplateRepository pipelineTemplateRepository,
                                  MetadataUtil metadataUtil) {
         this.connectionTypeCategoryRepository = connectionTypeCategoryRepository;
         this.connectionTypeRepository = connectionTypeRepository;
+        this.adminService = adminService;
+        this.pipelineTemplateRepository = pipelineTemplateRepository;
         this.metadataUtil = metadataUtil;
     }
 
@@ -102,7 +111,7 @@ public class ConnectionTypeService {
         }
 
         Optional<ConnectionTypeCategory> category = connectionTypeCategoryRepository.findByIdAndIsDeleted(
-                payload.getTypeDetails().getCategoryId(), false);
+                payload.getConnectionTypeDetails().getCategoryId(), false);
 
         if (category.isEmpty()) {
             throw new ApiException(new ApiResponse<>(
@@ -110,10 +119,10 @@ public class ConnectionTypeService {
                     "Connection type category not found"
             ));
         }
-        connectionType.setConnectionTypeDetails(payload.getTypeDetails());
+        connectionType.setConnectionTypeDetails(payload.getConnectionTypeDetails());
         connectionType.getConnectionTypeDetails().setCategory(category.get().getName());
         connectionType.getConnectionTypeDetails().setCategoryId(category.get().getId());
-        connectionType.getConnectionTypeDetails().setProcessType(payload.getTypeDetails().getProcessType());
+        connectionType.getConnectionTypeDetails().setProcessType(payload.getConnectionTypeDetails().getProcessType());
         connectionType.setGlobalConnectionType(payload.isGlobalConnectionType());
         connectionType.setName(payload.getName());
         connectionType.setPrivate(payload.isPrivate());
@@ -182,5 +191,33 @@ public class ConnectionTypeService {
 
     public Optional<ConnectionType> findById(String id) {
         return connectionTypeRepository.findByIdAndIsDeleted(id, false);
+    }
+
+    public Page<ConnectionType> getConnectionTypeBySource(ConnectionTypeFilter connectionTypeFilter, Pageable pageable) {
+//        This method is incomplete i am just creating it to fetch the target connection types of the sources
+
+        if (connectionTypeFilter.getSourceConnectionTypeId() != null) {
+            List<PipelineTemplate> allTemplates = pipelineTemplateRepository.findAllByIsDeleted(false);
+
+            List<PipelineTemplate> pipelineTemplates = allTemplates.stream()
+                    .filter(pt -> pt.getIntermediateTemplates().stream()
+                            .anyMatch(it -> connectionTypeFilter.getSourceConnectionTypeId().equals(it.getConnectionTypeId())))
+                    .toList();
+
+            List<String> targetConnectionTypeIds = new ArrayList<>();
+
+            for (PipelineTemplate pipelineTemplate : pipelineTemplates) {
+                for (IntermediateTemplate intermediateTemplate : pipelineTemplate.getIntermediateTemplates()) {
+                    if (intermediateTemplate.getTemplateType().equals(Constants.CONSUMER)) {
+                        targetConnectionTypeIds.add(intermediateTemplate.getConnectionTypeId());
+                    }
+                }
+            }
+
+            List<ConnectionType> targetConnectionTypes = connectionTypeRepository.findAllByIdInAndIsDeleted(targetConnectionTypeIds, false);
+
+            return new PageImpl<ConnectionType>(targetConnectionTypes, pageable, targetConnectionTypeIds.size());
+        }
+        throw new ApiException(new ApiResponse<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), "Source Connection Type is missing in request"));
     }
 }

@@ -3,6 +3,7 @@ package com.connection.api.v1.model.connector.objects;
 import com.connection.api.v1.model.common.Metadata;
 import com.connection.api.v1.model.connector.management.Attribute;
 import com.connection.api.v1.validator.annotation.IDGenerator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "connection_tbl")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Connection {
     @Id
     @IDGenerator
@@ -258,6 +260,10 @@ public class Connection {
 
     public void setInvalid(boolean invalid) {
         isInvalid = invalid;
+    }
+
+    public void addProperty(String key, Object value) {
+        this.properties.put(key, value);
     }
 
     public String getInvalidationReason() {

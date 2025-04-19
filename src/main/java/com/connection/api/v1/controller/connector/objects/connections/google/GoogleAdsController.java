@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/connector/google/ads")
+@CrossOrigin("*")
 public class GoogleAdsController {
     private final GoogleAds googleAdwords;
 

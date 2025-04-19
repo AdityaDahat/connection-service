@@ -1,6 +1,7 @@
 package com.connection.api.v1.repository.connector.objects;
 
 import com.connection.api.v1.model.connector.objects.Connection;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface ConnectionRepository extends JpaRepository<Connection, String> {
-    Optional<Connection> findByIdAndIsDeleted(String connectionId, boolean b);
+    Optional<Connection> findByIdAndIsDeleted(String connectionId, boolean isDeleted);
+
     @Query("SELECT c FROM Connection c WHERE c.projectId = :projectId AND c.isDeleted = :isDeleted AND JSONB_EXTRACT_PATH_TEXT(c.properties, 'customerId') = :customerId AND c.connectionTypeId = :connectionTypeId")
     Optional<Connection> findByProjectIdAndIsDeletedAndCustomerIdAndConnectionTypeId(
             String projectId,
@@ -32,5 +34,15 @@ public interface ConnectionRepository extends JpaRepository<Connection, String> 
 
     Optional<Connection> findByNameAndAndAccountIdAndProjectIdAndIsDeleted(String connectionName, String accountId, String projectId, boolean isDeleted);
 
-    List<Connection> findByProjectIdAndIsDeleted(String projectId, boolean b, Pageable pageable);
+    Page<Connection> findByProjectIdAndIsDeleted(String projectId, boolean isDeleted, Pageable pageable);
+
+    Optional<Connection> findByIdAndAndIsDeleted(String id, boolean b);
+
+    Optional<Connection> findByNameAndProjectIdAndIsDeleted(String name, String projectId, boolean isDeleted);
+
+    Optional<Connection> findByIdAndConnectionTypeIdAndIsDeleted(String id, String connectionTypeId, boolean isDeleted);
+
+    List<Connection> findAllByIdInAndIsDeletedAndIsPrivate(List<String> ids, boolean isDeleted, boolean isPrivate);
+
+    Page<Connection> findByProjectIdAndConnectionTypeIdAndIsDeleted(String projectId, String connectionTypeId, boolean b, Pageable pageable);
 }

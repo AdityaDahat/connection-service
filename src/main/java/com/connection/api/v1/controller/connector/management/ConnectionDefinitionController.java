@@ -19,6 +19,8 @@ import java.util.List;
 @RequestMapping("/v1/management")
 public class ConnectionDefinitionController {
 
+
+    @Autowired
     private final ConnectionDefinitionService connectionDefinitionService;
 
     @Autowired

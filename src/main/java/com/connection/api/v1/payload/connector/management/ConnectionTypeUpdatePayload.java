@@ -22,7 +22,7 @@ public class ConnectionTypeUpdatePayload {
 
 	@Valid
 	@NotNull
-	private ConnectionTypeDetails typeDetails;
+	private ConnectionTypeDetails connectionTypeDetails;
 
 	private Integer sequenceIndex;
 	private Float version = Float.valueOf(0);
@@ -57,12 +57,12 @@ public class ConnectionTypeUpdatePayload {
 		this.shortName = shortName;
 	}
 
-	public ConnectionTypeDetails getTypeDetails() {
-		return typeDetails;
+	public ConnectionTypeDetails getConnectionTypeDetails() {
+		return connectionTypeDetails;
 	}
 
-	public void setTypeDetails(ConnectionTypeDetails typeDetails) {
-		this.typeDetails = typeDetails;
+	public void setConnectionTypeDetails(ConnectionTypeDetails connectionTypeDetails) {
+		this.connectionTypeDetails = connectionTypeDetails;
 	}
 
 	public Integer getSequenceIndex() {

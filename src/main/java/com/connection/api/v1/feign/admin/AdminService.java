@@ -22,7 +22,7 @@ public interface AdminService {
     public ResponseEntity<Object> getAllProjects(@RequestHeader("Authorization") String token);
 
     @GetMapping("/project/{id}")
-    public ResponseEntity<Object> getProject(@PathVariable String id, @RequestHeader("Authorization") String token);
+    ResponseEntity<Object> getProject(@PathVariable String id, @RequestHeader("Authorization") String token);
 
 
 }

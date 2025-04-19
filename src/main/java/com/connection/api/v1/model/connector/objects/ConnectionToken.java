@@ -1,6 +1,7 @@
 package com.connection.api.v1.model.connector.objects;
 
 import com.connection.api.v1.validator.annotation.IDGenerator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "connection_token_tbl")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ConnectionToken {
     @Id
     @IDGenerator

@@ -15,7 +15,7 @@ spring:
         default_schema: connection_service
 
   liquibase:
-    enabled: false
+    enabled: true
     change-log: classpath:database/changelog-master.xml
     default-schema: ${spring.jpa.properties.hibernate.default_schema}
 
@@ -26,4 +26,4 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://localhost:1000/eureka
+      defaultZone: http://localhost:8761/eureka

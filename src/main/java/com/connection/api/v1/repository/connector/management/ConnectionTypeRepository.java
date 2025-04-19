@@ -20,7 +20,7 @@ public interface ConnectionTypeRepository extends CrudRepository<ConnectionType 
 
     Optional<ConnectionType> findByIdAndIsDeleted(String connectionTypeId, boolean b);
 
-    Page<ConnectionType> findAllByIsDeletedAndType(boolean b, String connectionObjectType, Pageable pageable);
+    Page<ConnectionType> findAllByIsDeletedAndType(boolean isDeleted, String connectionObjectType, Pageable pageable);
 
     Page<ConnectionType> findAllByIsDeleted(boolean b, Pageable pageable);
 
@@ -53,4 +53,6 @@ public interface ConnectionTypeRepository extends CrudRepository<ConnectionType 
 //    List<ConnectionType> findByCategoryIdAndIsDeleted(String connectionTypeCategoryId, boolean b);
 
     List<ConnectionType> findByIsDeleted(boolean b);
+
+    Optional<ConnectionType> findByIdAndTypeAndIsDeleted(String connectionTypeId, String connectionObjectType, boolean isDeleted);
 }

@@ -2,8 +2,10 @@ package com.connection.api.v1.controller.connector.management;
 
 import com.connection.api.v1.model.response.ApiResponse;
 import com.connection.api.v1.payload.connector.management.ConnectionTypeCreationPayload;
+import com.connection.api.v1.payload.connector.management.ConnectionTypeFilter;
 import com.connection.api.v1.payload.connector.management.ConnectionTypeUpdatePayload;
 import com.connection.api.v1.service.connector.management.ConnectionTypeService;
+import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,7 +39,7 @@ public class ConnectionTypeController {
 
     @PutMapping("/connection-type")
     public ResponseEntity<Object> updateConnectionType(
-            @Validated @RequestBody ConnectionTypeUpdatePayload connectionTypeCreationPayload) {
+            @Valid @RequestBody ConnectionTypeUpdatePayload connectionTypeCreationPayload) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(connectionTypeService.updateConnectionType(connectionTypeCreationPayload));
     }
@@ -74,5 +76,16 @@ public class ConnectionTypeController {
                 .status(HttpStatus.OK)
                 .body(connectionTypeService.getConnectionTypeByName(name, pageable));
     }
+
+
+    @PostMapping("/connection-types")
+    public ResponseEntity<Object> getConnectionTypes(@RequestBody ConnectionTypeFilter connectionTypeFilter,
+                                                     @ParameterObject Pageable pageable)
+    {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(connectionTypeService.getConnectionTypeBySource(connectionTypeFilter, pageable));
+    }
+
 
 }
